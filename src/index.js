@@ -29,13 +29,28 @@ class User {
     recoryUser(data) {
         for (user of data) {
 
-            const html = this.layoutUser(user.name, user.email, user.age, user.phone);
+            const html = this.layoutUser(user.name, user.email, user.age, user.phone, user.id);
 
             this.insertHtml(html);
         }
+
+        document.querySelectorAll('.delete-user').forEach(button => {
+            button.onclick = event => this.deleteUser(button.id);
+        })
+
     }
 
-    layoutUser(name, email, age, phone) {
+    deleteUser(id) {
+        axios.delete(`http://localhost:3000/users/${id}`)
+            .then(response => {
+                alert(response.data.result);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
+    layoutUser(name, email, age, phone, id) {
         return `
         <div class='col mt-5'>
             <div class='card'>
@@ -44,6 +59,7 @@ class User {
                     <p class='user-email'>${email}</p>
                     <p class='user-age'>${age}</p>
                     <p class='user-phone'>${phone}</p>
+                    <button type="button" class="btn btn-danger delete-user" id="${id}">Deletar</button>
                 </div>
             </div
         </div>
@@ -72,6 +88,7 @@ class User {
 
     insertHtml(html) {
         document.getElementById('usersBoard').innerHTML += html;
+
     }
 
     createUser(user) {
